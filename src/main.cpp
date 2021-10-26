@@ -10,11 +10,8 @@ const int toggle = 2;
 int mode = 0;
 int status = 0;
 
-WiFiClient client;
 ESP8266WebServer server(80);
 
-void handleRoot();
-void handleNotFound();
 void Toggle();
 
 void setup() {
@@ -39,16 +36,6 @@ void setup() {
     Serial.println("MDNS responder started");
   }
 
-  server.on("/", handleRoot);
-  
-  server.on("/inline", []() {
-    server.send(200, "text/plain", "Hello from the inline function\n");
-  });
-
-  server.onNotFound(handleNotFound);
-
-  server.begin();
-  Serial.println("HTTP server started");
 }
 
 void loop() {
@@ -97,21 +84,6 @@ void loop() {
     }
     mode = 0;
   } 
-}
-
-void handleRoot() {
-  String message = (server.method() == HTTP_GET)?"GET":"POST";
-  message += " " + server.uri() + "\n";
-  for (uint8_t i = 0; i < server.args(); i++) {
-    message += " " + server.argName(i) + " : " + server.arg(i) + "\n";
-  }
-  message += "\nHello from ESP8266!\n";
-  server.send(200, "text/plain", message);
-}
-
-void handleNotFound() {
-  String message = "File Not Found\n\n";
-  server.send(404, "text/plain", message);
 }
 
 void IRAM_ATTR Toggle() {
