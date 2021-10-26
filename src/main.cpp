@@ -7,7 +7,6 @@
 const char* ssid = "U+Net43B0";
 const char* password = "DD9D033347";
 const int toggle = 2;
-int mode = 0;
 int status = 0;
 
 WiFiClient client;
@@ -58,7 +57,7 @@ void loop() {
   WiFiClient client;
   HTTPClient http;
 
-  if (mode == 1 && status == 1) {
+  if (status == 1) {
     if(http.begin(client, "http://192.168.219.104/RelayOn")) {
       Serial.print("[HTTP] GET...");
 
@@ -75,10 +74,10 @@ void loop() {
         Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
       }
     }
-    mode = 0;
+    
   }
 
-  if (mode == 1 && status == 0) {
+  if (status == 0) {
     if(http.begin(client, "http://192.168.219.104/RelayOff")) {
       Serial.print("[HTTP] GET...");
 
@@ -95,7 +94,7 @@ void loop() {
         Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
       }
     }
-    mode = 0;
+    
   } 
 }
 
@@ -116,7 +115,6 @@ void handleNotFound() {
 
 void IRAM_ATTR Toggle() {
   Serial.println("pushed");
-  mode = 1;
   if (status == 1) {
     status = 0;
   } else {
